@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:tx="http://www.springframework.org/schema/tx"
+  xmlns:aop="http://www.springframework.org/schema/aop"
+  xmlns:websocket="http://www.springframework.org/schema/websocket"
+  xsi:schemaLocation="http://www.springframework.org/schema/websocket http://www.springframework.org/schema/websocket/spring-websocket-4.3.xsd
+		http://www.springframework.org/schema/beans https://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.3.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.3.xsd">
+  
+  <!-- Root Context: defines shared resources visible to all other web components -->
+  <!-- DB JDBC MYBATIS 설정 (pom.xml에서 필요한 resource 저장해놓음) jar file -> dependency 등록 -->
+  <!-- mybatis-config.xml을 spring에 맞게 수정
+  spring이 시작하면서 이용할 수 있는 객체로 등록됨
+  Spring 설정파일: BasicDataSource를 spring/spring 계정에게 부여. spring bean 등록
+  close 생성자를 이용해서 destroy. Spring xml 파일을 보고 생성자를 생성. 연결내용.
+  DB에 필요한 데이터를 BasicDataSource객체에 값을 넣음 setter(=property)-->
+  <!-- <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close"> -->
+  <bean id="realDataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+    <property name="driverClassName" value="oracle.jdbc.driver.OracleDriver"/>
+    <property name="url" value="jdbc:oracle:thin:@localhost:1521:xe"/>
+    <property name="username" value="spring"/>
+    <property name="password" value="spring"/>
+  </bean>
+  <!-- log를 추가하기 위한 라이브러리 추가 -->
+  <bean id="dataSource" class="net.sf.log4jdbc.Log4jdbcProxyDataSource" >
+    <!-- 생성자를 이용해서 생성하되 realDataSource를 사용하여 생성 -->
+    <constructor-arg ref="realDataSource" />
+    <property name="logFormatter">
+      <bean class="net.sf.log4jdbc.tools.Log4JdbcCustomFormatter">
+        <property name="loggingType" value="MULTI_LINE" />
+        <property name="sqlPrefix" value="[SQL]" />
+      </bean>
+    </property>
+  </bean>
+
+  <!-- Mybatis에서 SqlSession 객체를 생성하는 FactoryBean 을 springbean으로 등록 
+    Mybatis Spring jar파일에 있는 객체를 씀 객체생성 멤버변수로 BasicDataSource -->
+  <bean id="sqlSessionFactoryBean" class="org.mybatis.spring.SqlSessionFactoryBean">
+    <property name="dataSource" ref="dataSource"/>
+    <property name="mapperLocations" value="classpath*:mapper/**/*.xml"/>
+    <property name="configLocation" value="classpath:mybatis-config.xml"/>
+  </bean>
+  
+  <!-- SessionTemplate을 springbean으로 등록하여 활용 -->
+  <bean id="sqlSessionTemplate" class="org.mybatis.spring.SqlSessionTemplate">
+    <constructor-arg index="0" ref="sqlSessionFactoryBean"/>
+  </bean>
+  
+  <!-- 트랜젝션 처리  트랜젝션 처리할  bean을 등록 해줌, 이건 spring 제공 -->
+  <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+    <property name="dataSource" ref="dataSource" />
+  </bean>
+  
+  <!-- annotation 방식으로 처리하기 -->
+  <!-- tx는 namespace에 있는 것: namespace 등록하기 -->
+  <!-- <tx:annotation-driven transaction-manager="transactionManager" /> -->
+  
+  <!-- 선언적 방식으로 Transaction 처리 -->
+  <tx:advice id="txAdvice" transaction-manager="transactionManager">
+    <tx:attributes>
+      <tx:method name="insert*" rollback-for="Exception" />
+    </tx:attributes>
+  </tx:advice>
+
+  <!-- aop와 연결하여 트랜젝션을 적용 -->
+  <aop:config>
+    <aop:pointcut expression="execution(* com.kh.spring..*ServiceImpl.*(..))" id="serviceMethod" />
+    <aop:advisor advice-ref="txAdvice" pointcut-ref="serviceMethod" />
+  </aop:config>
+
+  <!-- 웹소켓 설정 bean 등록 -->
+  <!--  웹소켓설정  -->
+  <bean id="chatting" class="com.kh.spring.chatting.controller.ViewChatting"/>
+
+  <websocket:handlers>
+    <websocket:mapping handler="chatting" path="/viewChatting"/>
+  </websocket:handlers>
+
+  <bean class="org.springframework.web.socket.server.standard.ServletServerContainerFactoryBean">
+    <property name="maxBinaryMessageBufferSize" value="1020400"/>
+  </bean>
+
+</beans>

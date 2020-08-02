@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>테두리 설정하기</title>
+    <style>
+        div{
+            width: 100px;
+            height:100px;
+            display:inline-block;
+            border-left-width:10px;
+        }
+        .dashed{
+            border-style:dashed;
+            border-left-width:5px;
+            border-color:skyblue;
+        }
+        .dotted{
+            border-style:dotted;
+            border-color:lime;
+        }
+        .double{
+            border-style:double;
+            border-right-color:midnightblue;
+        }
+        .groove{
+            border-style:groove;
+            border-left:5px double silver;
+        }
+        .inset{
+            border-style:inset;
+        }
+        .outset{
+            border-style:outset;
+        }
+        .ridge{
+            border-style:ridge;
+        }
+
+        
+    </style>
+</head>
+<body>
+    <div class="dashed"></div>
+    <div class="dotted"></div>
+    <div class="double"></div>
+    <div class="groove"></div>
+    <div class="inset"></div>
+    <div class="outset"></div>
+    <div class="ridge"></div>
+    <div class="boder">원으로 변경해보자~!</div><br/>
+    <br/>
+    <br/>
+    <br/>
+    <br/>
+    <header>
+        <img src="media/jindo.jpg" width=100px height=100px class="boder"/>
+        <nav>
+            <ul>
+                <li><a href="http://">게시판</a></li>
+                <li><a href="http://">갤러리</a></li>
+                <li><a href="http://">자료실</a></li>
+            </ul>
+        </nav>
+        <style>
+            .boder{
+             border-radius:100px;
+             /* border-bottom-right-radius:100px; */
+            }
+            img{
+                float:left;
+                box-shadow: 3px 3px 50px blue;
+                margin-right: 30px;
+            }
+            nav{
+                /* float:left; */
+                /* padding-top:10px; */
+                /* box-shadow:3px 3px 20px tomato; */
+                /* content로 같이 묶여서 같이 움직임 margin 바꿔을때 */
+                /* margin-left:30px; */
+                /* margin:30px; */
+                padding-left:100px;
+                padding-top:10px;
+            }
+            nav>ul>li{
+                display:inline;
+                margin-right:50px;
+                box-shadow:3px 3px 20px blueviolet;
+            }
+            ul>li>a{
+                text-decoration:none;
+                font-size:30px;
+                color:lightsalmon;
+                font-weight:800;
+                text-shadow:3px 3px 20px greenyellow;
+            }
+        </style>
+    </header>
+    <div></div>
+    <br><br><br>
+    <table id="tb">
+        <tr>
+            <td>안녕하세요</td>
+            <td>유병습니다</td>
+        </tr>
+        <tr>
+            <td>반갑습니다.</td>
+            <td>호호호호호</td>
+        </tr>
+    </table>
+    <style>
+        #tb td{
+            border:1px solid black;
+            width:200px;
+            padding-left:5px;
+             
+        }
+        #tb{
+            border-spacing:0px;
+        }
+    </style>
+
+
+
+
+</body>
+</html>

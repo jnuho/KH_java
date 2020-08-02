@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://xmlns.jcp.org/xml/ns/javaee" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd" id="WebApp_ID" version="3.1">
+  <display-name>02_parameter</display-name>
+  <welcome-file-list>
+    <welcome-file>index.html</welcome-file>
+  </welcome-file-list>
+
+  <!-- 서버가 시작되면 자동으로 context객체에 초기 parameter값으로 설정
+  servlet에서 getInitParameter()메소드로 호출이 가능! -->
+  
+  <!-- 
+  servlet에서 initParams = {
+				@WebInitParam(name="dir",
+						value="C:\\Users\\user1\\KH\\KH_java\\Server\\first_workspace\\02_parameter\\web")
+		}
+		하는것과 equivalent 한 method: -->
+  <servlet>
+		<servlet-name>tttt</servlet-name>
+		<servlet-class>com.asdf</servlet-class>
+		<init-param>
+		  <param-name></param-name>
+		  <param-value></param-value>
+		</init-param>
+
+  </servlet>
+
+  <context-param>
+		<param-name>admin</param-name>
+		<param-value>prince0324@naver.com</param-value>
+  </context-param>
+  
+</web-app>
